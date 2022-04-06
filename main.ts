@@ -48,25 +48,6 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.flower, function (sprite, otherS
     bee.follow(cat)
 })
 function startLevel () {
-    cat = sprites.create(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . f . . . 
-        . . . . . . . . . . . . f f f . 
-        . . . . . . . . . . . . f f 1 f 
-        f f f f f f f f f f f f f f f f 
-        . . . . f f f f f f f f f . . . 
-        . . . . f f f f f f f f f . . . 
-        . . . . f . f . . . f . f . . . 
-        . . . . f . f . . . f . f . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, SpriteKind.Player)
-    controller.moveSprite(cat, 100, 0)
     if (current_level == 0) {
         tiles.setCurrentTilemap(tilemap`level1`)
     } else {
@@ -457,8 +438,27 @@ scene.setBackgroundImage(img`
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     6666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666
     `)
-startLevel()
 current_level = 0
+cat = sprites.create(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . f . . . 
+    . . . . . . . . . . . . f f f . 
+    . . . . . . . . . . . . f f 1 f 
+    f f f f f f f f f f f f f f f f 
+    . . . . f f f f f f f f f . . . 
+    . . . . f f f f f f f f f . . . 
+    . . . . f . f . . . f . f . . . 
+    . . . . f . f . . . f . f . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    `, SpriteKind.Player)
+controller.moveSprite(cat, 100, 0)
+startLevel()
 game.onUpdate(function () {
     cat.setImage(img`
         . . . . . . . . . . . . . . . . 
