@@ -70,7 +70,11 @@ function startLevel () {
     if (current_level == 0) {
         tiles.setCurrentTilemap(tilemap`level1`)
     } else {
-    	
+        tiles.setCurrentTilemap(tilemap`level3`)
+    }
+    tiles.placeOnRandomTile(cat, assets.tile`myTile4`)
+    for (let value of tiles.getTilesByType(assets.tile`myTile4`)) {
+        tiles.setTileAt(value, assets.tile`transparency16`)
     }
     tiles.placeOnRandomTile(cat, assets.tile`myTile4`)
     for (let value of tiles.getTilesByType(assets.tile`myTile4`)) {
@@ -320,7 +324,7 @@ function startLevel () {
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     otherSprite.destroy()
     if (cat.y < otherSprite.y) {
-        info.changeScoreBy(1)
+        info.changeScoreBy(3)
     } else {
         info.changeLifeBy(-1)
     }
@@ -462,6 +466,9 @@ game.onUpdate(function () {
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . f . . . 
         . . . . . . . . . . . . f f f . 
         . . . . . . . . . . . . f f 1 f 
@@ -470,9 +477,6 @@ game.onUpdate(function () {
         . . . . f f f f f f f f f . . . 
         . . . . f . f . . . f . f . . . 
         . . . . f . f . . . f . f . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
         `)
     if (cat.vy < 0) {
         cat.setImage(img`
