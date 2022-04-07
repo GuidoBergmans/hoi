@@ -50,10 +50,13 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.flower, function (sprite, otherS
 function startLevel () {
     if (current_level == 0) {
         tiles.setCurrentTilemap(tilemap`level1`)
-    } else {
+    } else if (current_level == 1) {
         tiles.setCurrentTilemap(tilemap`level3`)
+    } else if (current_level == 2) {
+        tiles.setCurrentTilemap(tilemap`level4`)
+    } else {
+        game.over(true)
     }
-    tiles.placeOnRandomTile(cat, assets.tile`myTile4`)
     for (let value of tiles.getTilesByType(assets.tile`myTile4`)) {
         tiles.setTileAt(value, assets.tile`transparency16`)
     }
@@ -64,6 +67,15 @@ function startLevel () {
     cat.ay = 350
     scene.cameraFollowSprite(cat)
     info.setLife(5)
+    for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
+        value.destroy()
+    }
+    for (let value of sprites.allOfKind(SpriteKind.coin)) {
+        value.destroy()
+    }
+    for (let value of sprites.allOfKind(SpriteKind.flower)) {
+        value.destroy()
+    }
     for (let value of tiles.getTilesByType(assets.tile`myTile2`)) {
         coin = sprites.create(img`
             . . . . . . . . . . . . . . . . 
@@ -301,6 +313,7 @@ function startLevel () {
         tiles.placeOnTile(flower, value)
         tiles.setTileAt(value, assets.tile`transparency16`)
     }
+    tiles.placeOnRandomTile(cat, assets.tile`myTile4`)
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     otherSprite.destroy()
@@ -535,6 +548,11 @@ game.onUpdate(function () {
             . . . . f f . . . . . f f . . . 
             . . . . f f . . . . . f f . . . 
             `)
+    } else {
+    	
+    }
+    if (true) {
+    	
     } else {
     	
     }
