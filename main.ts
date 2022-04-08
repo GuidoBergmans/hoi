@@ -1,6 +1,7 @@
 namespace SpriteKind {
     export const coin = SpriteKind.create()
     export const flower = SpriteKind.create()
+    export const fireBal = SpriteKind.create()
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile0`, function (sprite, location) {
     game.over(false)
@@ -13,6 +14,10 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (cat.vy == 0) {
         cat.vy = -150
     }
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.fireBal, function (sprite, otherSprite) {
+    info.changeLifeBy(-2)
+    otherSprite.destroy()
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.coin, function (sprite, otherSprite) {
     info.changeScoreBy(1)
@@ -57,14 +62,10 @@ function startLevel () {
     } else {
         game.over(true)
     }
-    for (let value of tiles.getTilesByType(assets.tile`myTile4`)) {
-        tiles.setTileAt(value, assets.tile`transparency16`)
-    }
     tiles.placeOnRandomTile(cat, assets.tile`myTile4`)
     for (let value of tiles.getTilesByType(assets.tile`myTile4`)) {
         tiles.setTileAt(value, assets.tile`transparency16`)
     }
-    cat.ay = 350
     scene.cameraFollowSprite(cat)
     info.setLife(5)
     for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
@@ -313,6 +314,35 @@ function startLevel () {
         tiles.placeOnTile(flower, value)
         tiles.setTileAt(value, assets.tile`transparency16`)
     }
+    for (let value of tiles.getTilesByType(assets.tile`myTile9`)) {
+        fireBal = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . 5 5 5 . . . . . . . . 
+            . . . . 5 5 . 5 5 5 . . . . . . 
+            . . . 5 . 4 4 4 4 5 5 . . 5 . . 
+            . . . 5 4 4 . 2 4 4 4 2 . . . . 
+            . . . 5 4 2 2 2 4 2 4 4 5 5 . . 
+            . . 5 5 4 2 . . 4 2 2 4 4 5 5 . 
+            . . 2 4 2 2 . 8 8 4 2 2 2 4 5 . 
+            . . 5 4 4 2 2 2 8 8 4 4 2 4 5 5 
+            . . . 5 5 4 4 4 2 . 2 . 4 4 4 5 
+            . . . . 5 5 5 4 4 4 2 . . 4 4 2 
+            . . 5 . . . 5 5 . . 4 4 4 4 5 5 
+            . . . . . . . . 5 5 5 5 5 5 5 . 
+            . . . . . . . . . . . . 5 . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.fireBal)
+        tiles.placeOnTile(fireBal, value)
+        tiles.setTileAt(value, assets.tile`transparency16`)
+        animation.runMovementAnimation(
+        fireBal,
+        "c 0 -100 0 100 0 0",
+        2000,
+        true
+        )
+        fireBal.startEffect(effects.fire)
+    }
     tiles.placeOnRandomTile(cat, assets.tile`myTile4`)
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
@@ -323,6 +353,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
         info.changeLifeBy(-1)
     }
 })
+let fireBal: Sprite = null
 let flower: Sprite = null
 let coin: Sprite = null
 let bee: Sprite = null
@@ -471,26 +502,9 @@ cat = sprites.create(img`
     . . . . . . . . . . . . . . . . 
     `, SpriteKind.Player)
 controller.moveSprite(cat, 100, 0)
+cat.setBounceOnWall(false)
 startLevel()
 game.onUpdate(function () {
-    cat.setImage(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . f . . . 
-        . . . . . . . . . . . . f f f . 
-        . . . . . . . . . . . . f f 1 f 
-        f f f f f f f f f f f f f f f f 
-        . . . . f f f f f f f f f . . . 
-        . . . . f f f f f f f f f . . . 
-        . . . . f . f . . . f . f . . . 
-        . . . . f . f . . . f . f . . . 
-        `)
     if (cat.vy < 0) {
         cat.setImage(img`
             . . . . . . . . . . . . . . . . 
@@ -529,7 +543,7 @@ game.onUpdate(function () {
             . . . . . . . . f . f . . . . . 
             . . . . . . . . f . f f . . . . 
             `)
-    } else if (cat.x % 2 == 0) {
+    } else if (Math.round(cat.x) % 2 == 0) {
         cat.setImage(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
@@ -549,14 +563,51 @@ game.onUpdate(function () {
             . . . . f f . . . . . f f . . . 
             `)
     } else {
-    	
+        cat.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . f . . . 
+            . . . . . . . . . . . . f f f . 
+            . . . . . . . . . . . . f f 1 f 
+            f f f f f f f f f f f f f f f f 
+            . . . . f f f f f f f f f . . . 
+            . . . . f f f f f f f f f . . . 
+            . . . . f . f . . . f . f . . . 
+            . . . . f . f . . . f . f . . . 
+            `)
     }
-    if (true) {
-    	
+    if ((cat.isHittingTile(CollisionDirection.Left) || cat.isHittingTile(CollisionDirection.Right)) && cat.vy >= 0) {
+        cat.vy = 0
+        cat.ay = 0
+        cat.setImage(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . f f . . 
+            . . . . . . . . . . . f 5 f . . 
+            . . . . . . . . . . f f f f . . 
+            . . . . . . . . . . f f f f . . 
+            . . . . . . . . . . . . f f f f 
+            . . . . . . . . . . . . f f . . 
+            . . . . . . . . . . . . f f f f 
+            . . . . . . . f . . . . f f . . 
+            . . . . . . . f . . . . f f . . 
+            . . . . . . . f . . . . f f . . 
+            . . . . . . . f . . . . f f f f 
+            . . . . . . . f f . . . f f . . 
+            . . . . . . . . f f f f f f f f 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `)
     } else {
-    	
+        cat.ay = 350
     }
-    if (cat.vx < 0) {
+    if (cat.vx < 0 || cat.isHittingTile(CollisionDirection.Left)) {
         cat.image.flipX()
+        cat.setImage(cat.image)
     }
 })
